@@ -498,6 +498,7 @@ export function outputTypedWsdl(
           // FIXME
         )
         .substring(1);
+      // @ts-ignore (not my fault. Oli wants it. 🦄)
       const absoluteWsdl = path.resolve(a.client.wsdl.uri);
       const absoluteServiceFile = path.resolve(fileName) + '/workaround';
       const relativeWsdl = path.relative(
