@@ -1,6 +1,6 @@
 import * as soap from 'soap';
 import * as _ from 'lodash';
-import Templates from './template';
+import Templates, { TS_IMPORT_PATHS } from './template';
 import * as path from 'path';
 // import { diffLines } from "diff";
 
@@ -498,6 +498,7 @@ export function outputTypedWsdl(
           // FIXME
         )
         .substring(1);
+      // @ts-ignore (not my fault. Oli wants it. 🦄)
       const absoluteWsdl = path.resolve(a.client.wsdl.uri);
       const absoluteServiceFile = path.resolve(fileName) + '/workaround';
       const relativeWsdl = path.relative(
@@ -510,9 +511,9 @@ export function outputTypedWsdl(
         // .map(u => (u.endsWith(">") ? u.substring(0, u.length - 1) : u))
         .filter(e => e !== 'string' && e !== 'number' && e !== 'boolean' && !e.includes('"'));
       types.push('ArBaseSoapNode');
-      interfaceFile.data.push(`import { ${types.join(', ')} } from "common/lib-soapclient/src/lib/wsdl.types";`);
+      interfaceFile.data.push(`import { ${types.join(', ')} } from "${TS_IMPORT_PATHS.WSDL_TYPES}";`);
       interfaceFile.data.push(
-        `import { XmlNamespace, XmlOrder } from "common/lib-soapclient/src/lib/wsdl.decorators";`,
+        `import { XmlNamespace, XmlOrder } from "${TS_IMPORT_PATHS.WSDL_DECORATORS}";`,
       );
       interfaceFile.data.push(`import { Type } from "class-transformer";`);
 
