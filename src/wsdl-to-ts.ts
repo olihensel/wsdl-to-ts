@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import Templates, { TS_IMPORT_PATHS } from './template';
 import * as path from 'path';
 import safeStringify from 'fast-safe-stringify';
+import { parse, stringify } from 'flatted';
 
 // import { diffLines } from "diff";
 
@@ -303,7 +304,7 @@ export function wsdl2ts(wsdlUri: string, opts?: IInterfaceOptions): Promise<ITyp
       endpoint: '',
     };
     const description = client.describe();
-    console.log('DESCRIPTION:', safeStringify(description));
+    console.log('DESCRIPTION:', stringify(description));
 
     const describedServices = (client as any).wsdl.services;
     const describedService = describedServices[Object.keys(describedServices)[0]];
