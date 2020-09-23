@@ -76,7 +76,7 @@ function wsdlTypeToInterfaceObj(
     namespace: /* obj.targetNSAlias === "tns" ? "" :*/ obj.targetNamespace as string,
   };
   for (const key of Object.keys(obj)) {
-    if (key === 'targetNSAlias' || key === 'targetNamespace') {
+    if (key === 'targetNSAlias' || key === 'targetNamespace' /*|| key === 'type'*/) {
       continue;
     }
     const isArray = key.endsWith('[]');
