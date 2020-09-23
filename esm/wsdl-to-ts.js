@@ -38,6 +38,10 @@ function wsdlTypeToInterfaceObj(obj, parentName, typeCollector) {
         const propertyName = isArray ? key.substring(0, key.length - 2) : key;
         const collectedTypeName = parentName ? `${parentName}_${propertyName}` : propertyName;
         const v = obj[key];
+        if (v === key) {
+            // somehow there can be nested circular objects?!
+            continue;
+        }
         const t = typeof v;
         if (t === 'string') {
             const vstr = v;
