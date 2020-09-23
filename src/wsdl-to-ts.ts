@@ -2,6 +2,8 @@ import * as soap from 'soap';
 import * as _ from 'lodash';
 import Templates, { TS_IMPORT_PATHS } from './template';
 import * as path from 'path';
+import safeStringify from 'fast-safe-stringify';
+
 // import { diffLines } from "diff";
 
 export const nsEnums: { [k: string]: boolean } = {};
@@ -158,14 +160,7 @@ function wsdlTypeToInterfaceObj(
 
         if (s.startsWith('/**')) {
           const i = s.indexOf('*/') + 2;
-          s =
-            s.substring(0, i) +
-            ' Array<' +
-            s
-              .substring(i)
-              .trim()
-              .replace(/;$/, '') +
-            '>;';
+          s = s.substring(0, i) + ' Array<' + s.substring(i).trim().replace(/;$/, '') + '>;';
         } else {
           s = s.trim().replace(/;$/, '');
           if (/^[A-Za-z0-9.]+$/.test(s)) {
@@ -218,7 +213,7 @@ function wsdlTypeToInterfaceString(d: { [k: string]: any }, opts: IInterfaceOpti
     const t = typeof d[k];
     let propertyName: string = k;
     if (opts.quoteProperties || (opts.quoteProperties === undefined && !/^[A-Za-z][A-Za-z0-9_-]*$/.test(k))) {
-      propertyName = JSON.stringify(k);
+      propertyName = safeStringify(k);
     }
 
     let type = '';
@@ -234,7 +229,7 @@ function wsdlTypeToInterfaceString(d: { [k: string]: any }, opts: IInterfaceOpti
                 if (p.indexOf("\"") === 0) {
                   p = `"${fullType}:${p.substring(1)}`;
                 } else {
-                  p = JSON.stringify(`${fullType}:${p}`);
+                  p = safeStringify(`${fullType}:${p}`);
                 }
                 */
         // for types like "xsd:string" only the "string" part is used
@@ -292,7 +287,7 @@ export function wsdl2ts(wsdlUri: string, opts?: IInterfaceOptions): Promise<ITyp
         resolve(client);
       }
     });
-  }).then(client => {
+  }).then((client) => {
     const output: ITypedWsdl = {
       client,
       files: {},
@@ -303,7 +298,7 @@ export function wsdl2ts(wsdlUri: string, opts?: IInterfaceOptions): Promise<ITyp
       endpoint: '',
     };
     const description = client.describe();
-    console.log('DESCRIPTION:', JSON.stringify(description));
+    console.log('DESCRIPTION:', safeStringify(description));
 
     const describedServices = (client as any).wsdl.services;
     const describedService = describedServices[Object.keys(describedServices)[0]];
@@ -344,7 +339,7 @@ export function wsdl2ts(wsdlUri: string, opts?: IInterfaceOptions): Promise<ITyp
           if (regKeys0.length === regKeys1.length) {
             let noChange = true;
             for (const rk of regKeys0) {
-              if (JSON.stringify(collector.registered[rk]) !== JSON.stringify(reg[rk])) {
+              if (safeStringify(collector.registered[rk]) !== safeStringify(reg[rk])) {
                 noChange = false;
                 break;
               }
@@ -507,20 +502,18 @@ export function outputTypedWsdl(
       );
 
       const types = _.uniq(knownTypes)
-        .map(u => u.replace(';', ''))
+        .map((u) => u.replace(';', ''))
         // .map(u => (u.endsWith(">") ? u.substring(0, u.length - 1) : u))
-        .filter(e => e !== 'string' && e !== 'number' && e !== 'boolean' && !e.includes('"'));
+        .filter((e) => e !== 'string' && e !== 'number' && e !== 'boolean' && !e.includes('"'));
       types.push('ArBaseSoapNode');
       interfaceFile.data.push(`import { ${types.join(', ')} } from "${TS_IMPORT_PATHS.WSDL_TYPES}";`);
-      interfaceFile.data.push(
-        `import { XmlNamespace, XmlOrder } from "${TS_IMPORT_PATHS.WSDL_DECORATORS}";`,
-      );
+      interfaceFile.data.push(`import { XmlNamespace, XmlOrder } from "${TS_IMPORT_PATHS.WSDL_DECORATORS}";`);
       interfaceFile.data.push(`import { Type } from "class-transformer";`);
 
       interfaceFile.data.push(
         `export const ${interfaceFile.file.substring(
           interfaceFile.file.lastIndexOf('/') + 1,
-        )}Namespaces: string[] = ${JSON.stringify(a.soapNamespaces, null, 4)};`,
+        )}Namespaces: string[] = ${safeStringify(a.soapNamespaces, null, 4)};`,
       );
       if (a.namespaces[service] && a.namespaces[service][port]) {
         for (const ns of Object.keys(a.namespaces[service][port])) {
