@@ -1,6 +1,6 @@
 export const TS_IMPORT_PATHS = {
-  WSDL_CLIENT : '@adamriese/soap-client/lib/wsdl.client',
-  WSDL_DECORATORS : '@adamriese/soap-client/lib/wsdl.decorators',
+  WSDL_CLIENT: '@adamriese/soap-client/lib/wsdl.client',
+  WSDL_DECORATORS: '@adamriese/soap-client/lib/wsdl.decorators',
   WSDL_TYPES: '@adamriese/soap-client/lib/wsdl.types',
   CORE: '@adamriese/core',
 };
@@ -10,7 +10,7 @@ export default class Templates {
     return `import { BaseSoapService, IArSoapOptions } from '${TS_IMPORT_PATHS.WSDL_CLIENT}';
 import { IOptions } from 'soap';
 import * as path from 'path';
-import { ArApiLogger, RecursivePartial } from '${TS_IMPORT_PATHS.CORE}';
+import { RecursivePartial } from '${TS_IMPORT_PATHS.CORE}';
 
 
 export class ${body.serviceName} extends BaseSoapService {
@@ -37,7 +37,6 @@ async initializeClientAsync(
   public static serviceMethodTemplate(body: any) {
     return `  async ${body.methodName}Async(
     inputData: RecursivePartial<I${body.methodName}Input>,
-    logger: ArApiLogger,
     options?: object,
     extraHeaders?: object
   ): Promise<{
@@ -50,7 +49,6 @@ async initializeClientAsync(
       I${body.methodName}Input,
       "${body.methodName}",
       inputData,
-      logger,
       options,
       extraHeaders);
   }`;
