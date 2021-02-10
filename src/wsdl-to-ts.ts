@@ -144,7 +144,7 @@ function wsdlTypeToInterfaceObj(
         propertyName === parentSegments.pop()
       ) {
         // we are at least three levels into recursion
-        output.keys[propertyName] = '/** RECURSION! ' + parentName + '(' + 'unknown' + ') */ ' + 'any' + ';';
+        output.keys[propertyName] = '/** RECURSION! ' + parentName + '(' + 'unknown' + ') */ ' + 'anyType' + ';';
       } else {
         const to = wsdlTypeToInterfaceObj(v as IInterfaceObject, `${parentName}_${propertyName}`, typeCollector);
         let tr: { [k: string]: any } | string;
