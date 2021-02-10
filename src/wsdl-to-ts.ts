@@ -137,74 +137,84 @@ function wsdlTypeToInterfaceObj(
       }
       output.keys[propertyName] = '/** ' + typeFullName + '(' + typeData + ') */ ' + typeClass + ';';
     } else {
-      const to = wsdlTypeToInterfaceObj(v as IInterfaceObject, `${parentName}_${propertyName}`, typeCollector);
-      let tr: { [k: string]: any } | string;
-      if (isArray) {
-        let s = wsdlTypeToInterfaceString(to.keys);
-        if (typeCollector && typeCollector.ns) {
-          if (
-            typeCollector.registered.hasOwnProperty(collectedTypeName) &&
-            typeCollector.registered[collectedTypeName] &&
-            typeCollector.registered[collectedTypeName].object === s
-          ) {
-            s = typeCollector.ns + '.I' + collectedTypeName + ';';
-          } else if (
-            typeCollector.collected.hasOwnProperty(collectedTypeName) &&
-            typeCollector.collected[collectedTypeName]
-          ) {
-            if (typeCollector.collected[collectedTypeName].object !== s) {
-              typeCollector.collected[collectedTypeName] = null;
-            }
-          } else {
-            typeCollector.collected[collectedTypeName] = {
-              object: s,
-              namespace: to.namespace,
-            };
-          }
-        }
-        s = s.replace(/\n/g, '\n    ');
-
-        if (s.startsWith('/**')) {
-          const i = s.indexOf('*/') + 2;
-          s = s.substring(0, i) + ' Array<' + s.substring(i).trim().replace(/;$/, '') + '>;';
-        } else {
-          s = s.trim().replace(/;$/, '');
-          if (/^[A-Za-z0-9.]+$/.test(s)) {
-            s += '[];';
-          } else {
-            s = 'Array<' + s + '>;';
-          }
-        }
-
-        tr = s;
+      const parentSegments = parentName.split('_');
+      if (
+        propertyName === parentSegments.pop() &&
+        propertyName === parentSegments.pop() &&
+        propertyName === parentSegments.pop()
+      ) {
+        // we are at least three levels into recursion
+        output.keys[propertyName] = '/** RECURSION! ' + parentName + '(' + 'unknown' + ') */ ' + 'any' + ';';
       } else {
-        tr = to.keys;
-        if (typeCollector && typeCollector.ns) {
-          const ss = wsdlTypeToInterfaceString(to.keys);
-          if (
-            typeCollector.registered.hasOwnProperty(collectedTypeName) &&
-            typeCollector.registered[collectedTypeName] &&
-            typeCollector.registered[collectedTypeName].object === ss
-          ) {
-            tr = typeCollector.ns + '.I' + collectedTypeName + ';';
-          } else if (
-            typeCollector.collected.hasOwnProperty(collectedTypeName) &&
-            typeCollector.collected[collectedTypeName]
-          ) {
-            if (typeCollector.collected[collectedTypeName].object !== ss) {
-              typeCollector.collected[collectedTypeName] = null;
+        const to = wsdlTypeToInterfaceObj(v as IInterfaceObject, `${parentName}_${propertyName}`, typeCollector);
+        let tr: { [k: string]: any } | string;
+        if (isArray) {
+          let s = wsdlTypeToInterfaceString(to.keys);
+          if (typeCollector && typeCollector.ns) {
+            if (
+              typeCollector.registered.hasOwnProperty(collectedTypeName) &&
+              typeCollector.registered[collectedTypeName] &&
+              typeCollector.registered[collectedTypeName].object === s
+            ) {
+              s = typeCollector.ns + '.I' + collectedTypeName + ';';
+            } else if (
+              typeCollector.collected.hasOwnProperty(collectedTypeName) &&
+              typeCollector.collected[collectedTypeName]
+            ) {
+              if (typeCollector.collected[collectedTypeName].object !== s) {
+                typeCollector.collected[collectedTypeName] = null;
+              }
+            } else {
+              typeCollector.collected[collectedTypeName] = {
+                object: s,
+                namespace: to.namespace,
+              };
+            }
+          }
+          s = s.replace(/\n/g, '\n    ');
+
+          if (s.startsWith('/**')) {
+            const i = s.indexOf('*/') + 2;
+            s = s.substring(0, i) + ' Array<' + s.substring(i).trim().replace(/;$/, '') + '>;';
+          } else {
+            s = s.trim().replace(/;$/, '');
+            if (/^[A-Za-z0-9.]+$/.test(s)) {
+              s += '[];';
+            } else {
+              s = 'Array<' + s + '>;';
+            }
+          }
+
+          tr = s;
+        } else {
+          tr = to.keys;
+          if (typeCollector && typeCollector.ns) {
+            const ss = wsdlTypeToInterfaceString(to.keys);
+            if (
+              typeCollector.registered.hasOwnProperty(collectedTypeName) &&
+              typeCollector.registered[collectedTypeName] &&
+              typeCollector.registered[collectedTypeName].object === ss
+            ) {
+              tr = typeCollector.ns + '.I' + collectedTypeName + ';';
+            } else if (
+              typeCollector.collected.hasOwnProperty(collectedTypeName) &&
+              typeCollector.collected[collectedTypeName]
+            ) {
+              if (typeCollector.collected[collectedTypeName].object !== ss) {
+                typeCollector.collected[collectedTypeName] = null;
+              }
+            } else {
+              typeCollector.collected[collectedTypeName] = {
+                object: ss,
+                namespace: to.namespace,
+              };
             }
           } else {
-            typeCollector.collected[collectedTypeName] = {
-              object: ss,
-              namespace: to.namespace,
-            };
+            console.log(typeCollector);
           }
-        } else {
-          console.log(typeCollector);
         }
+        output.keys[propertyName] = tr;
       }
-      output.keys[propertyName] = tr;
     }
   }
   // console.log("wsdlTypeToInterfaceObj:", r);
