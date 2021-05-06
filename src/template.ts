@@ -10,7 +10,7 @@ export default class Templates {
     return `import { BaseSoapService, IArSoapOptions } from '${TS_IMPORT_PATHS.WSDL_CLIENT}';
 import { IOptions } from 'soap';
 import * as path from 'path';
-import { RecursivePartial } from '${TS_IMPORT_PATHS.CORE}';
+import { PartialDeep } from 'type-fest';
 
 
 export class ${body.serviceName} extends BaseSoapService {
@@ -36,7 +36,7 @@ async initializeClientAsync(
   }
   public static serviceMethodTemplate(body: any) {
     return `  async ${body.methodName}Async(
-    inputData: RecursivePartial<I${body.methodName}Input>,
+    inputData: PartialDeep<I${body.methodName}Input>,
     options?: object,
     extraHeaders?: object
   ): Promise<{
