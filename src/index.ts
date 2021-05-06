@@ -1,25 +1,21 @@
 #!/usr/bin/env node
 'use strict';
-
 import { rename, writeFile } from 'fs';
-import * as path from 'path';
 import * as minimist from 'minimist';
 import * as mkdirp from 'mkdirp';
+import * as path from 'path';
+
 import { IInterfaceOptions, mergeTypedWsdl, outputTypedWsdl, wsdl2ts } from './wsdl-to-ts';
 
 interface IConfigObject {
   outdir: string;
   files: string[];
-  tslintDisable: null | string[];
-  tslintEnable: null | string[];
 }
 
 const opts: IInterfaceOptions = {};
 const config: IConfigObject = {
   outdir: './wsdl',
   files: [],
-  tslintDisable: ['max-line-length', 'no-empty-interface'],
-  tslintEnable: [],
 };
 
 const args = minimist(process.argv.slice(2));
@@ -34,20 +30,6 @@ if (args.version) {
   console.log('%s %s', 'wsdl-to-ts', pack.version);
   process.exit(0);
   throw new Error('Exited');
-}
-
-if (args.hasOwnProperty('tslint')) {
-  if (args.tslint === 'true') {
-    config.tslintEnable = null;
-  } else if (args.tslint === 'false' || args.tslint === 'disable') {
-    config.tslintDisable = null;
-  } else {
-    config.tslintEnable = args.tslint ? args.tslint.split(',') : null;
-  }
-}
-
-if (args.hasOwnProperty('tslint-disable')) {
-  config.tslintDisable = args['tslint-disable'] ? args['tslint-disable'].split(',') : null;
 }
 
 if (args.outdir || args.outDir) {
@@ -90,12 +72,12 @@ function mkdirpp(dir: string, mode?: number): Promise<string> {
   });
 }
 
-Promise.all(config.files.map(a => wsdl2ts(a, opts)))
-  .then(xs => mergeTypedWsdl.apply(undefined, xs))
-  .then(a => outputTypedWsdl(a, { wsdlImportBasePath, forceNamespaceOnInputRoot: opts.forceNamespaceOnInputRoot }))
+Promise.all(config.files.map((a) => wsdl2ts(a, opts)))
+  .then((xs) => mergeTypedWsdl.apply(undefined, xs))
+  .then((a) => outputTypedWsdl(a, { wsdlImportBasePath, forceNamespaceOnInputRoot: opts.forceNamespaceOnInputRoot }))
   .then((xs: Array<{ file: string; data: string[] }>) => {
     return Promise.all(
-      xs.map(x => {
+      xs.map((x) => {
         // console.log("-- %s --", x.file);
         // console.log("%s", x.data.join("\n\n"));
         const file = config.outdir + '/' + x.file;
@@ -104,20 +86,11 @@ Promise.all(config.files.map(a => wsdl2ts(a, opts)))
           return new Promise((resolve, reject) => {
             const tsfile = file + '.ts.tmp';
             const fileData: string[] = [];
-            if (config.tslintEnable === null) {
-              fileData.push('/* tslint:enable */');
-            }
-            if (config.tslintDisable === null) {
-              fileData.push('/* tslint:disable */');
-            } else if (config.tslintDisable.length !== 0) {
-              fileData.push('/* tslint:disable:' + config.tslintDisable.join(' ') + ' */');
-            }
-            if (config.tslintEnable && config.tslintEnable.length !== 0) {
-              fileData.push('/* tslint:enable:' + config.tslintEnable.join(' ') + ' */');
-            }
+            fileData.push('/* eslint-disable max-len, @typescript-eslint/no-empty-interface */');
+
             fileData.push(x.data.join('\n\n'));
             fileData.push('');
-            writeFile(tsfile, fileData.join('\n'), err => {
+            writeFile(tsfile, fileData.join('\n'), (err) => {
               if (err) {
                 reject(err);
               } else {
@@ -131,10 +104,10 @@ Promise.all(config.files.map(a => wsdl2ts(a, opts)))
   })
   .then((files: string[]) =>
     Promise.all(
-      files.map(file => {
+      files.map((file) => {
         return new Promise((resolve, reject) => {
           const realFile = file.replace(/\.[^.]+$/, '');
-          rename(file, realFile, err => {
+          rename(file, realFile, (err) => {
             if (err) {
               reject(err);
             } else {
@@ -145,7 +118,7 @@ Promise.all(config.files.map(a => wsdl2ts(a, opts)))
       }),
     ),
   )
-  .catch(err => {
+  .catch((err) => {
     console.error(err);
     process.exitCode = 3;
   });
