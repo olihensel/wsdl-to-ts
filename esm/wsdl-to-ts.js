@@ -1,9 +1,9 @@
-import * as soap from 'soap';
-import * as _ from 'lodash';
-import Templates, { TS_IMPORT_PATHS } from './template';
-import * as path from 'path';
 import safeStringify from 'fast-safe-stringify';
 import { stringify } from 'flatted';
+import * as _ from 'lodash';
+import * as path from 'path';
+import * as soap from 'soap';
+import Templates, { TS_IMPORT_PATHS } from './template';
 // import { diffLines } from "diff";
 export const nsEnums = {};
 export class TypeCollector {
@@ -206,7 +206,7 @@ function wsdlTypeToInterfaceString(d, opts = {}) {
                 else {
                     type = rawtype;
                 }
-                if (type.endsWith('>;')) {
+                if (type.endsWith('>;') && !type.startsWith('Array<')) {
                     type = type.substring(0, type.length - 2) + ';';
                 }
                 knownTypes.push(type);
