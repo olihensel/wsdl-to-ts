@@ -4,7 +4,6 @@ import { rename, writeFile } from 'fs';
 import * as minimist from 'minimist';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
-
 import { IInterfaceOptions, mergeTypedWsdl, outputTypedWsdl, wsdl2ts } from './wsdl-to-ts';
 
 interface IConfigObject {
@@ -80,11 +79,13 @@ Promise.all(config.files.map((a) => wsdl2ts(a, opts)))
       xs.map((x) => {
         // console.log("-- %s --", x.file);
         // console.log("%s", x.data.join("\n\n"));
+        console.log(`expected file without extension: ${x.file}`);
         const file = config.outdir + '/' + x.file;
         const dir = file.replace(/\/[^/]+$/, '');
         return mkdirpp(dir).then(() => {
           return new Promise((resolve, reject) => {
             const tsfile = file + '.ts.tmp';
+            console.log(`writing to ${tsfile}`);
             const fileData: string[] = [];
             fileData.push('/* eslint-disable max-len, @typescript-eslint/no-empty-interface */');
 
@@ -107,6 +108,7 @@ Promise.all(config.files.map((a) => wsdl2ts(a, opts)))
       files.map((file) => {
         return new Promise((resolve, reject) => {
           const realFile = file.replace(/\.[^.]+$/, '');
+          console.log(`moving file from ${file} to ${realFile}`);
           rename(file, realFile, (err) => {
             if (err) {
               reject(err);
