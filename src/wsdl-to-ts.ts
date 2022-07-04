@@ -259,6 +259,9 @@ function wsdlTypeToInterfaceString(d: { [k: string]: any }, opts: IInterfaceOpti
         if (type.endsWith('>;') && !type.startsWith('Array<')) {
           type = type.substring(0, type.length - 2) + ';';
         }
+        if (type.endsWith('[]')) {
+          type = type.substring(0, type.length - 2);
+        }
         knownTypes.push(type);
       }
       // r.push(propertyName + ": " + type);
