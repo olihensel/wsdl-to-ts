@@ -226,7 +226,7 @@ function wsdlTypeToInterfaceString(d, opts = {}) {
         if (shortenedType.startsWith('Array<') && shortenedType.endsWith('>')) {
             shortenedType = shortenedType.substring(6).substring(0, shortenedType.length - 7);
         }
-        if (shortenedType.includes('.') && !shortenedType.startsWith('{')) {
+        if (shortenedType.includes('.') && !shortenedType.startsWith('{') && !shortenedType.includes("'")) {
             r.push(`@Type(() => ${shortenedType})`);
         }
         r.push(`@XmlOrder(${orderCounter++})`);
