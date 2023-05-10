@@ -25,7 +25,7 @@
   },
   "license": "ISC",
   "peerDependencies": {
-    "type-fest": "^2.0.0"
+    "type-fest": "^3.0.0"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.23",
