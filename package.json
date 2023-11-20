@@ -46,13 +46,6 @@
     "minimist": "^1.2.0",
     "mkdirp": ">=0.5.1 <1.0.0",
     "reflect-metadata": "^0.1.13",
-    "soap": "^0.36.0"
-  },
-  "bugs": {
-    "url": "https://github.com/TimLuq/wsdl-to-ts/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/TimLuq/wsdl-to-ts.git"
+    "soap": "github:olihensel/node-soap"
   }
 }
