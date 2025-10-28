@@ -416,12 +416,12 @@ export function wsdl2ts(wsdlUri: string, opts?: IInterfaceOptions): Promise<ITyp
             "extraHeaders?: any" +
             ") => void";
             */
-          output.methods[service][port][method + 'Async'] =
-            '(input: I' +
-            method +
-            'Input, options?: any, extraHeaders?: any) => Promise<{result: I' +
-            method +
-            'Output, rawResponse: string, soapHeader: {[k: string]: string; }, rawRequest: string}>';
+          // output.methods[service][port][method + 'Async'] =
+          //   '(input: I' +
+          //   method +
+          //   'Input, options?: any, extraHeaders?: any) => Promise<{result: I' +
+          //   method +
+          //   'Output, rawResponse: string, soapHeader: {[k: string]: string; }, rawRequest: string}>';
         }
       }
     }
