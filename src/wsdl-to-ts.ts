@@ -416,12 +416,12 @@ export function wsdl2ts(wsdlUri: string, opts?: IInterfaceOptions): Promise<ITyp
             "extraHeaders?: any" +
             ") => void";
             */
-          // output.methods[service][port][method + 'Async'] =
-          //   '(input: I' +
-          //   method +
-          //   'Input, options?: any, extraHeaders?: any) => Promise<{result: I' +
-          //   method +
-          //   'Output, rawResponse: string, soapHeader: {[k: string]: string; }, rawRequest: string}>';
+          output.methods[service][port][method + 'Async'] =
+            '(input: I' +
+            method +
+            'Input, options?: any, extraHeaders?: any) => Promise<{result: I' +
+            method +
+            'Output, rawResponse: string, soapHeader: {[k: string]: string; }, rawRequest: string}>';
         }
       }
     }
@@ -570,7 +570,8 @@ export function outputTypedWsdl(
             serviceName: service,
             relativeTypesPath,
           };
-          ms.push(method + ': ' + a.methods[service][port][method] + ';');
+          // unused interface for the method. client wrapper is used instead
+          // ms.push(method + ': ' + a.methods[service][port][method] + ';');
           serviceFile.data.unshift(Templates.serviceImportTemplate(templateObj));
           serviceFile.data.push(Templates.serviceMethodTemplate(templateObj));
         }
