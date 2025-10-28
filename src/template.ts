@@ -39,7 +39,7 @@ async initializeClientAsync(
   ): Promise<{
     result: I${body.methodName}Output;
     rawResponse: string;
-    soapHeader: { [k: string]: any };
+    soapHeader: { [k: string]: string };
     rawRequest: string;
   }> {
     return await this.executeSoapMethod<I${body.methodName}Input, I${body.methodName}Output>(
