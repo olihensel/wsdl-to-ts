@@ -74,7 +74,7 @@ Promise.all(config.files.map((a) => wsdl2ts(a, opts)))
                 const tsfile = file + '.ts.tmp';
                 console.log(`writing to ${tsfile}`);
                 const fileData = [];
-                fileData.push('/* eslint-disable max-len, @typescript-eslint/no-empty-interface */');
+                // fileData.push('/* eslint-disable max-len, @typescript-eslint/no-empty-interface */');
                 fileData.push(x.data.join('\n\n'));
                 fileData.push('');
                 writeFile(tsfile, fileData.join('\n'), (err) => {

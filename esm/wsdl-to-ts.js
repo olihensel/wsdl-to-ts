@@ -437,8 +437,8 @@ export function outputTypedWsdl(a, outputConfig) {
             const types = _.uniq(knownTypes.map((u) => u.replace(';', '')).map((u) => u.replace('[]', '')))
                 // .map(u => (u.endsWith(">") ? u.substring(0, u.length - 1) : u))
                 .filter((e) => e !== 'string' && e !== 'number' && e !== 'boolean' && !e.includes('"'));
-            types.push('ArBaseSoapNode');
-            interfaceFile.data.push(`import { ${types.join(', ')} } from "${TS_IMPORT_PATHS.WSDL_TYPES}";`);
+            interfaceFile.data.push(`import type { ${types.join(', ')} } from "${TS_IMPORT_PATHS.WSDL_TYPES}";`);
+            interfaceFile.data.push(`import { ArBaseSoapNode } from "${TS_IMPORT_PATHS.WSDL_TYPES}";`);
             interfaceFile.data.push(`import { XmlNamespace, XmlOrder } from "${TS_IMPORT_PATHS.WSDL_DECORATORS}";`);
             interfaceFile.data.push(`import { Type } from "class-transformer";`);
             interfaceFile.data.push(`export const ${interfaceFile.file.substring(interfaceFile.file.lastIndexOf('/') + 1)}Namespaces: string[] = ${safeStringify(a.soapNamespaces, null, 4)};`);
