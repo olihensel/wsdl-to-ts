@@ -348,7 +348,7 @@ export function wsdl2ts(wsdlUri, opts) {
                             method +
                             'Input, options?: any, extraHeaders?: any) => Promise<{result: I' +
                             method +
-                            'Output, rawResponse: string, soapHeader: {[k: string]: any; }, rawRequest: string}>';
+                            'Output, rawResponse: string, soapHeader: {[k: string]: string; }, rawRequest: string}>';
                 }
             }
         }

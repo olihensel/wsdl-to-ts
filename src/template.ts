@@ -9,17 +9,14 @@ export default class Templates {
   public static serviceHeaderTemplate(body: any) {
     return `import { BaseSoapService, IArSoapOptions } from '${TS_IMPORT_PATHS.WSDL_CLIENT}';
 import { IOptions } from 'soap';
-import * as path from 'path';
+import * as path from 'node:path';
 import { PartialDeep } from 'type-fest';
 
 
 export class ${body.serviceName} extends BaseSoapService {
 
-public static readonly serviceName = "${body.serviceName}";
-public static readonly defaultEndpoint = "${body.defaultEndpoint}";
-constructor() {
-    super();
-}
+static readonly serviceName = "${body.serviceName}";
+static readonly defaultEndpoint = "${body.defaultEndpoint}";
 
 async initializeClientAsync(
     wsdlBasePath: string,
